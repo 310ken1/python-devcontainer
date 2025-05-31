@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: prism mockの動作確認用API
+  description: 「npx prism mock docs\openapi.yml」で起動し、openapi.httpで動作確認する
+  version: 1.0.0
+
+#
+# サーバー設定
+#
+servers:
+  - url: http://localhost:4010/
+    description: local
+
+#
+# パス（エンドポイント）定義
+# https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#paths-object
+#
+paths:
+  /users:
+    get:
+      summary: ユーザー情報リストの取得
+      description: ユーザー情報のリストを取得する
+      tags: ["Users"]
+      responses:
+        "200":
+          description: ユーザーリスト
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                noneCase:
+                  summary: "ユーザー未登録"
+                  value: []
+                singleCase:
+                  summary: "単数ユーザー取得"
+                  value:
+                    [{ id: 1, name: "田中 太郎", email: "tanaka@example.com" }]
+                multiCase:
+                  summary: "複数ユーザー取得"
+                  value:
+                    [
+                      { id: 1, name: "田中 太郎", email: "tanaka@example.com" },
+                      { id: 2, name: "佐藤 花子", email: "sato@example.com" },
+                    ]
+
+        "401":
+          description: 認証が必要です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: ユーザーの作成
+      description: システムに新しいユーザーを作成する
+      tags: ["Users"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: ユーザーが作成されました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: リクエストが不正です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{userId}:
+    get:
+      summary: ユーザー情報を取得する
+      description: ユーザIDを指定し、ユーザーを取得する
+      tags: ["Users"]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: ユーザーID
+            format: int64
+      responses:
+        "200":
+          description: ユーザーの詳細情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: ユーザーが見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: ユーザー情報の更新
+      description: ユーザIDを指定し、ユーザー情報を更新する
+      tags: ["Users"]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: ユーザーID
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: ユーザー情報が更新されました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: ユーザーが見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /health:
+    get:
+      summary: ヘルスチェック
+      description: システムのヘルスチェックを行う
+      responses:
+        "200":
+          description: システムは正常です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+
+#
+# 共通定義
+# https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#components-object
+#
+components:
+  # 再利用可能なスキーマ(データモデル)定義
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ユーザーID
+          format: int64
+        name:
+          type: string
+          description: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          format: email
+      required:
+        - id
+        - name
+        - email
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: エラーコード
+        message:
+          type: string
+          description: エラーメッセージ
+      required:
+        - code
+        - message
+
+tags:
+  - name: "Users"
+    description: "ユーザー関連のAPI"

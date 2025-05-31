@@ -1,0 +1,55 @@
+{
+  "name": "Python開発環境",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=cached",
+    "source=${USERPROFILE}/.aws,target=/root/.aws,type=ro",
+    "source=venv,target=/workspace/.venv,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Python
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "njpwerner.autodocstring",
+        "esbenp.prettier-vscode",
+        // 開発支援ツール
+        "VisualStudioExptTeam.vscodeintellicode",
+        "VisualStudioExptTeam.vscodeintellicode-completions",
+        "VisualStudioExptTeam.intellicode-api-usage-examples",
+        "streetsidesoftware.code-spell-checker",
+        "redhat.vscode-yaml",
+        "uctakeoff.vscode-counter",
+        "alefragnani.Bookmarks",
+        "usernamehw.errorlens",
+        "PKief.material-icon-theme",
+        // AWS
+        "amazonwebservices.aws-toolkit-vscode",
+        // Markdown
+        "shd101wyy.markdown-preview-enhanced",
+        "DavidAnson.vscode-markdownlint",
+        "TakumiI.markdowntable",
+        "mushan.vscode-paste-image",
+        // Docker
+        "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-containers",
+        // ドキュメント
+        "hediet.vscode-drawio",
+        "42Crunch.vscode-openapi",
+        // テスト
+        "humao.rest-client",
+        // Visual Studio Code
+        "MS-CEINTL.vscode-language-pack-ja"
+      ],
+      "settings": {
+        // OpenAPI Editor設定
+        "openapi.defaultPreviewRenderer": "redoc"
+      }
+    }
+  }
+}

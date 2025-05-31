@@ -1,0 +1,54 @@
+
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+.markdown-preview.markdown-preview {
+  body {
+    font-size: 1.0em;
+  }
+  li {
+    line-height: 1.6;
+    margin-bottom: 1.0em;
+  }
+  h1 {
+    counter-reset: chapter;
+    font-size: 1.6em;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 0 0 1px 0;
+  }
+  h2 {
+    counter-reset: sub-chapter;
+    font-size: 1.4em;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 0 0 1px 0;
+  }
+  h3 {
+    counter-reset: section;
+    font-size: 1.2em;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 0 0 1px 0;
+  }
+  h4 {
+    counter-reset: section;
+    font-size: 1.0em;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 0 0 1px 0;
+  }
+
+  h2::before {
+    counter-increment: chapter;
+    content: counter(chapter) ". ";
+  }
+  h3::before {
+    counter-increment: sub-chapter;
+    content: counter(chapter) "." counter(sub-chapter) ". ";
+  }
+  h4::before {
+    counter-increment: section;
+    content: "【" counter(section) "】";
+  }
+}

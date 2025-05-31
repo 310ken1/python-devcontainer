@@ -1,0 +1,25 @@
+{
+  "version": "0.2",
+  "words": [
+    "graphviz",
+    "ipafont",
+    "tmp_path",
+    "tmp_path_factory",
+    "capsys",
+    "capfd",
+    "capsysbinary",
+    "capfdbinary",
+    "caplog",
+    "monkeypatch",
+    "request",
+    "pytestconfig",
+    "cache",
+    "recwarn",
+    "testdir"
+  ],
+  "ignorePaths": [
+    ".cspell.json",
+    ".devcontainer/**",
+    "pyproject.toml"
+  ]
+}

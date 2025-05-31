@@ -1,0 +1,71 @@
+# ===================================
+# 改行コードを LF に統一（Unixスタイル）
+# Windows でも clone 時に自動変換される
+# ===================================
+* text=auto eol=lf
+
+# ===================================
+# 特定のファイルは明示的に LF/CRLF を指定する場合
+# ===================================
+
+# Bash やシェルスクリプトは LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Windowsバッチは CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Markdown, HTML, JSON, YAML などは LF
+*.md text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# CSS/JS/TS/TSX ファイルも LF
+*.css text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+
+# ソースコード系は LF
+*.py text eol=lf
+*.c text eol=lf
+*.cpp text eol=lf
+*.cs text eol=lf
+## java
+*.java text eol=lf
+/gradlew text eol=lf
+*.jar binary
+
+# テキストファイル全般
+*.txt text eol=lf
+
+# ===================================
+# バイナリファイルはテキスト扱いしない
+# ===================================
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.exe binary
+*.dll binary
+
+# ===================================
+# VSCode 設定ファイルも LF 推奨
+# ===================================
+*.code-workspace text eol=lf
+.vscode/* text eol=lf
+
+*.js linguist-language=Java
+*.css linguist-language=Java
+*.ts linguist-language=vue
+*.html linguist-language=vue
+*.sql linguist-language=Java
+*.ftl linguist-language=Java
