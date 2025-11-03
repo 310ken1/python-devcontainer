@@ -55,7 +55,7 @@
     }
   },
   "remoteEnv": {
-    "PYTHON_VERSION": "3.14",
+    "PYTHON_VERSION": "3.13",
     "VIRTUAL_ENV": "/workspace/.venv",
     "UV_VENV_CLEAR": "1"
   },

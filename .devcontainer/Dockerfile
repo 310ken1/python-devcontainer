@@ -22,6 +22,7 @@ RUN --mount=type=cache,target=/var/cache/dnf \
     tar \
     unzip \
     git \
+    findutils \
     java \
     graphviz \
     glibc-langpack-ja \
@@ -47,6 +48,7 @@ RUN groupadd -g ${GID} ${USER} && \
 
 # プロジェクト設定
 RUN mkdir -p /workspace && chown -R ${UID}:${GID} /workspace
+ENV PATH="/workspace/scripts/:$PATH"
 
 USER ${USER}
 WORKDIR ${HOME}
