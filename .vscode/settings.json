@@ -1,52 +1,52 @@
 {
-    // ファイル設定
-    "files.autoSave": "afterDelay", // 自動保存(任意の時間経過)
-    "files.insertFinalNewline": true, // ファイルの末尾に自動で改行を追加
-    // エディタ設定
-    "editor.tabSize": 2, // インデントを2スペースに統一
-    "editor.formatOnSave": true, // ファイルを保存するたびに自動でコードを整形
-    // python設定
-    "[python]": {
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit",
-            "source.organizeImports": "explicit"
-        },
-        "editor.defaultFormatter": "charliermarsh.ruff"
+  // ファイル設定
+  "files.autoSave": "afterDelay", // 自動保存(任意の時間経過)
+  "files.insertFinalNewline": true, // ファイルの末尾に自動で改行を追加
+  // エディタ設定
+  "editor.tabSize": 2, // インデントを2スペースに統一
+  "editor.formatOnSave": true, // ファイルを保存するたびに自動でコードを整形
+  // python設定
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
     },
-    "python.terminal.activateEnvInCurrentTerminal": false,
-    "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
-    "python.testing.pytestArgs": [
-        "tests",
-        "--cov=src"
-    ],
-    "python.experiments.optInto": [
-        "pythonTestAdapter"
-    ],
-    "ruff.organizeImports": false,
-    // yaml設定
-    "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml",
-        "editor.formatOnSave": true
-    },
-    // json設定
-    "prettier.tabWidth": 2,
-    "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features",
-        "editor.formatOnSave": true
-    },
-    // Docker設定
-    "[dockerfile]": {
-        "editor.defaultFormatter": "ms-azuretools.vscode-containers",
-        "editor.formatOnSave": true
-    },
-    // Markdown Preview Enhanced設定
-    "markdown-preview-enhanced.plantumlJarPath": "/usr/local/bin/plantuml.jar",
-    "markdown-preview-enhanced.enableScriptExecution": true
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": [
+    "tests",
+    "--cov=src"
+  ],
+  "python.experiments.optInto": [
+    "pythonTestAdapter"
+  ],
+  "ruff.organizeImports": true,
+  // yaml設定
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true
+  },
+  // json設定
+  "prettier.tabWidth": 2,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+  // Docker設定
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers",
+    "editor.formatOnSave": true
+  },
+  // Markdown Preview Enhanced設定
+  "markdown-preview-enhanced.plantumlJarPath": "/usr/local/bin/plantuml.jar",
+  "markdown-preview-enhanced.enableScriptExecution": true
 }

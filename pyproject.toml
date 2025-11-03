@@ -3,7 +3,7 @@ name = "Python-DevContainer"
 version = "0.1.0"
 description = "DevContainer を利用した Python 用の開発環境"
 readme = "README.md"
-requires-python = "==3.13.*"
+requires-python = "==3.14.*"
 
 dependencies = [
 ]

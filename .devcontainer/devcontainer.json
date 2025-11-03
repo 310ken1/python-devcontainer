@@ -3,10 +3,12 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=cached",
     "source=${USERPROFILE}/.aws,target=/root/.aws,type=ro",
-    "source=venv,target=/workspace/.venv,type=volume"
+    "source=venv,target=/workspace/.venv,type=volume",
+    "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
   ],
   "customizations": {
     "vscode": {
@@ -51,5 +53,11 @@
         "openapi.defaultPreviewRenderer": "redoc"
       }
     }
-  }
+  },
+  "remoteEnv": {
+    "PYTHON_VERSION": "3.14",
+    "VIRTUAL_ENV": "/workspace/.venv",
+    "UV_VENV_CLEAR": "1"
+  },
+  "postCreateCommand": "sh .devcontainer/postCreateCommand.sh"
 }
