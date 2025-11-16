@@ -1,0 +1,274 @@
+﻿# A5:ER FORMAT:19
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.20.1 Copyright © 1997 - 2025 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+ProjectName=python_devcontainer
+Author=
+MaxEntityRowShow=1000
+ReadOnlyRecommend=0
+Page=Main
+PageInfo="Main",2,"A3Landscape",$FFFFFF
+LogicalView=1
+DecodeDomain=0
+ViewModePageIndividually=1
+ViewMode=2
+ViewFormat=0
+UseNondependenceDashLine=0
+FontName=Tahoma
+FontSize=6
+PaperSize=A4Landscape
+HeaderLeft=
+HeaderCenter=
+HeaderRight=
+FooterLeft=
+FooterCenter=
+FooterRight=
+ShowPageoutRelation=1
+RDBMSType=7
+RDBMSTypeName=PostgreSQL
+GenerateDropTableStatement=1
+DropTableIfExists=1
+DefaultPkName=%0:s_PKC
+DefaultPkIndexName=%0:s_PKI
+DefaultIndexName=%0:s_IX%1:d
+DefaultFkName=%0:s_FK%1:d
+SqlSeparator=0
+UpperCaseKeyword=1
+CreateOrder=Dependent
+ShowTag=1
+ShowCommonAttributes=0
+BugFixEntityWidth=1
+
+[Entity]
+PName=role_permissions
+LName=ロール権限
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=1800
+Top=250
+Field="role_id","role_id","bigint","NOT NULL",0,"","",$FFFFFFFF,""
+Field="permission_id","permission_id","bigint","NOT NULL",1,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20251116215039
+Position="MAIN",1800,250,291,113
+ZOrder=-2
+
+[Entity]
+PName=permissions
+LName=権限
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=2250
+Top=200
+Field="権限ID","permission_id","bigserial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="権限名","name","character varying(100)","NOT NULL",,"","",$FFFFFFFF,""
+Field="説明","description","text",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20251116215350
+Position="MAIN",2250,200,380,141
+ZOrder=-1
+
+[Entity]
+PName=user_credentials
+LName=認証情報
+Comment=パスワードハッシュやログイン状態など、機密情報を分離して格納
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=200
+Top=600
+Field="ユーザID","user_id","bigint","NOT NULL",0,"","",$FFFFFFFF,""
+Field="パスワードハッシュ","password_hash","character varying(255)","NOT NULL",,"","",$FFFFFFFF,""
+Field="最終ログイン日時","last_login_at","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+Field="連続ログイン失敗回数","failed_attempts","integer","NOT NULL",,"0","",$FFFFFFFF,""
+Field="ロック解除予定日時","locked_until","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+Field="更新日時","updated_at","timestamp(6) without time zone","NOT NULL",,"now()","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20251116215302
+Position="MAIN",200,600,378,193
+ZOrder=-4
+
+[Entity]
+PName=roles
+LName=ロール
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=1300
+Top=200
+Field="ロールID","role_id","bigserial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ロール名","name","character varying(100)","NOT NULL",,"","",$FFFFFFFF,""
+Field="説明","description","text",,,"","",$FFFFFFFF,""
+Field="作成日時","created_at","timestamp(6) without time zone","NOT NULL",,"now()","",$FFFFFFFF,""
+Index=roles_name_key=2,name
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20251116215339
+Position="MAIN",1300,200,388,144
+ZOrder=-3
+
+[Entity]
+PName=users
+LName=ユーザ情報
+Comment=認証情報とは分離し、プロフィールや状態のみを保持
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=200
+Top=200
+Field="ユーザID","user_id","bigserial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="メールアドレス","email","character varying(255)","NOT NULL",,"","",$FFFFFFFF,""
+Field="ユーザ名","username","character varying(100)",,,"","",$FFFFFFFF,""
+Field="表示名","display_name","character varying(255)",,,"","",$FFFFFFFF,""
+Field="有効／無効","is_active","boolean","NOT NULL",,"true","",$FFFFFFFF,""
+Field="作成日時","created_at","timestamp(6) without time zone","NOT NULL",,"now()","",$FFFFFFFF,""
+Field="更新日時","updated_at","timestamp(6) without time zone","NOT NULL",,"now()","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20251116215251
+Position="MAIN",200,200,378,266
+ZOrder=-6
+
+[Entity]
+PName=user_roles
+LName=ユーザロール
+Comment=ユーザに割り当てられているロール
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=800
+Top=250
+Field="ユーザID","user_id","bigint","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ロールID","role_id","bigint","NOT NULL",1,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20251116215504
+Position="MAIN",800,250,385,129
+ZOrder=-5
+
+[Relation]
+Entity1=users
+Entity2=user_credentials
+RelationType1=2
+RelationType2=2
+Fields1=user_id
+Fields2=user_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,3524,6365,3947,R,R,""
+Dependence=1
+Caption=
+PName=
+ModifiedDateTime=20251116215148
+LineMode=0
+Bar1=352
+Bar2=636
+Bar3=395
+TermPos1=R
+TermPos2=R
+ZOrder=0
+
+[Relation]
+Entity1=roles
+Entity2=role_permissions
+RelationType1=4
+RelationType2=3
+Fields1=role_id
+Fields2=role_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,1531,8469,2849,R,R,""
+Dependence=0
+Caption=
+PName=
+ModifiedDateTime=20251116220930
+LineMode=0
+Bar1=153
+Bar2=847
+Bar3=285
+TermPos1=R
+TermPos2=R
+ZOrder=1
+
+[Relation]
+Entity1=permissions
+Entity2=role_permissions
+RelationType1=4
+RelationType2=3
+Fields1=permission_id
+Fields2=permission_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,1531,8469,6601,R,R,""
+Dependence=0
+Caption=
+PName=
+ModifiedDateTime=20251116221023
+LineMode=0
+Bar1=153
+Bar2=847
+Bar3=660
+TermPos1=R
+TermPos2=R
+ZOrder=2
+
+[Relation]
+Entity1=users
+Entity2=user_roles
+RelationType1=4
+RelationType2=3
+Fields1=user_id
+Fields2=user_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,3283,6717,3591,R,R,""
+Dependence=0
+Caption=
+PName=
+ModifiedDateTime=20251116220914
+LineMode=0
+Bar1=328
+Bar2=672
+Bar3=359
+TermPos1=R
+TermPos2=R
+ZOrder=3
+
+[Relation]
+Entity1=roles
+Entity2=user_roles
+RelationType1=4
+RelationType2=3
+Fields1=role_id
+Fields2=role_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,2853,7147,2797,R,R,""
+Dependence=0
+Caption=
+PName=
+ModifiedDateTime=20251116220900
+LineMode=0
+Bar1=285
+Bar2=715
+Bar3=280
+TermPos1=R
+TermPos2=R
+ZOrder=4

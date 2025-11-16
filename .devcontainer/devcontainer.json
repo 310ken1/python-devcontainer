@@ -21,11 +21,7 @@
         "njpwerner.autodocstring",
         "esbenp.prettier-vscode",
         // 開発支援ツール
-        "VisualStudioExptTeam.vscodeintellicode",
-        "VisualStudioExptTeam.vscodeintellicode-completions",
-        "VisualStudioExptTeam.intellicode-api-usage-examples",
         "streetsidesoftware.code-spell-checker",
-        "redhat.vscode-yaml",
         "uctakeoff.vscode-counter",
         "alefragnani.Bookmarks",
         "usernamehw.errorlens",
@@ -37,6 +33,8 @@
         "DavidAnson.vscode-markdownlint",
         "TakumiI.markdowntable",
         "mushan.vscode-paste-image",
+        // yaml
+        "redhat.vscode-yaml",
         // Docker
         "ms-azuretools.vscode-docker",
         "ms-azuretools.vscode-containers",

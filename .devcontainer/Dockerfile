@@ -8,7 +8,7 @@ ARG UID=1001
 ARG GID=1001
 ARG HOME=/home/${USER}
 # PlantUML
-ARG PLANTUML_VERSION=1.2025.9
+ARG PLANTUML_VERSION=1.2025.10
 
 # 環境変数
 ENV LANG=ja_JP.UTF-8
@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/var/cache/dnf \
     unzip \
     git \
     findutils \
-    java \
+    java-21-amazon-corretto-headless \
     graphviz \
     glibc-langpack-ja \
     ipa-gothic-fonts && \
