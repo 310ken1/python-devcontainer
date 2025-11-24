@@ -4,25 +4,22 @@ from __future__ import annotations
 
 import json
 import os
-import textwrap
-import time
 from typing import TYPE_CHECKING, Any
 
 from aws_lambda_powertools import Logger, Metrics, Tracer
-from aws_lambda_powertools.metrics import MetricUnit
-from aws_lambda_powertools.utilities import parameters
 from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent, event_source
 from aws_lambda_powertools.utilities.parser import BaseModel, ValidationError, parse
 
 from api.middleware.error import BadRequestError, error_handler
 from api.middleware.validate import validate
+from api.repository.db_connector import DBConnector
+from api.repository.user_repository import UserRecord, UserRepository
 
 if TYPE_CHECKING:
     from aws_lambda_powertools.utilities.typing import LambdaContext
-    from psycopg2.extras import DictRow
 
 LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "INFO")
-SSM_PATH_PREFIX: str = os.environ.get("SSM_PATH_PREFIX", "/python-devcontainer/dev/")
+SSM_PATH: str = os.environ.get("SSM_PATH", "/python-devcontainer/dev/settings")
 
 SERVICE_NAME: str = "python-devcontainer"
 NAMESPACE_NAME: str = "lambda_handler"
@@ -30,19 +27,6 @@ NAMESPACE_NAME: str = "lambda_handler"
 logger: Logger = Logger(service=SERVICE_NAME, level=LOG_LEVEL)
 tracer: Tracer = Tracer(service=SERVICE_NAME)
 metrics: Metrics = Metrics(namespace=NAMESPACE_NAME, service=SERVICE_NAME)
-
-
-def get_psycopg2() -> Any:  # noqa: ANN401
-    """psycopg2モジュールを遅延インポートして返す.
-
-    Returns:
-        Any: psycopg2モジュール
-    """
-    # NOTE: Lambdaのコールドスタート時間短縮のため、psycopg2を遅延インポート
-    import psycopg2  # noqa: PLC0415
-    import psycopg2.extras  # noqa: PLC0415
-
-    return psycopg2
 
 
 class User(BaseModel):
@@ -58,65 +42,6 @@ body_schema: dict = {
     },
     "required": ["id"],
 }
-
-
-class UserRecord(BaseModel):
-    """DBから取得したユーザーレコードのスキーマ."""
-
-    user_id: int
-    email: str
-    username: str | None
-    display_name: str | None
-
-
-@tracer.capture_method
-def fetch_db(user: User) -> UserRecord | None:
-    """DBからデータを取得する.
-
-    Args:
-        user (User): ユーザーモデル
-    Returns:
-        UserRecord: ユーザー情報
-    """
-    settings: dict = parameters.get_parameter(f"{SSM_PATH_PREFIX}settings", transform="json")
-    db_settings: dict = settings["db"]
-
-    start_time: float = time.perf_counter()
-    psycopg2 = get_psycopg2()
-
-    query: str = textwrap.dedent(
-        """
-        SELECT
-            user_id
-            , email
-            , username
-            , display_name
-        FROM
-            users
-        WHERE
-            user_id = %s;
-        """,
-    )
-
-    with (
-        psycopg2.connect(
-            dbname=db_settings["database"],
-            user=db_settings["user"],
-            password=db_settings["password"],
-            host=db_settings["host"],
-            port=db_settings["port"],
-        ) as conn,
-        conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor,
-    ):
-        cursor.execute(query, (user.id,))
-        end_time: float = time.perf_counter()
-        metrics.add_metric(
-            name="DatabaseQueryLatency",
-            unit=MetricUnit.Milliseconds,
-            value=(end_time - start_time) * 1000,
-        )
-        record: DictRow = cursor.fetchone()
-        return UserRecord.model_validate(dict(record)) if record else None
 
 
 @metrics.log_metrics(capture_cold_start_metric=True)
@@ -144,7 +69,8 @@ def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, A
 
     logger.append_keys(user_id=user.id)
 
-    record: UserRecord | None = fetch_db(user)
+    repository: UserRepository = UserRepository(DBConnector(SSM_PATH), metrics)
+    record: UserRecord | None = repository.get_user_by_id(user.id)
     if record:
         response_body = {
             "user_id": record.user_id,
