@@ -36,7 +36,7 @@ event_template: dict = {
     "isBase64Encoded": False,
     "queryStringParameters": None,
     "multiValueQueryStringParameters": None,
-    "body": json.dumps({"id": 1}),
+    "body": {"id": 1},
 }
 expected_template: dict = {
     "response": {
@@ -53,6 +53,13 @@ expected_template: dict = {
     },
 }
 
+excepted_400_template: dict = {
+    "response": {
+        "statusCode": 400,
+        "body": json.dumps({"error": "Bad Request"}),
+    },
+}
+
 test_cases: dict = {
     "正常": [
         # mock
@@ -61,6 +68,14 @@ test_cases: dict = {
         event_template,
         # expected
         expected_template,
+    ],
+    "異常 400": [
+        # mock
+        mock_template,
+        # event
+        event_template | {"body": {"id": "invalid"}},
+        # expected
+        excepted_400_template,
     ],
 }
 
@@ -81,6 +96,10 @@ test_cases: dict = {
 )
 def test_user(mock: dict, event: dict, expected: dict) -> None:
     """lambda_handlerの単体テスト."""
+    lambda_event = event.copy()
+    if isinstance(event["body"], dict):
+        lambda_event["body"] = json.dumps(event["body"])
+
     with mock_aws():
         ssm = boto3.client("ssm")
         ssm.put_parameter(
@@ -94,5 +113,5 @@ def test_user(mock: dict, event: dict, expected: dict) -> None:
 
         importlib.reload(api.get_user)
 
-        response = api.get_user.lambda_handler(event, LambdaContext())
+        response = api.get_user.lambda_handler(lambda_event, LambdaContext())
         assert response == expected["response"]

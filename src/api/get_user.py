@@ -5,15 +5,17 @@ from __future__ import annotations
 import json
 import os
 import textwrap
+import time
 from typing import TYPE_CHECKING, Any
 
 from aws_lambda_powertools import Logger, Metrics, Tracer
+from aws_lambda_powertools.metrics import MetricUnit
 from aws_lambda_powertools.utilities import parameters
 from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent, event_source
 from aws_lambda_powertools.utilities.parser import BaseModel, ValidationError, parse
-from aws_lambda_powertools.utilities.validation import validate
 
-from api.error_middleware import BadRequestError, handle_api_errors
+from api.middleware.error import BadRequestError, error_handler
+from api.middleware.validate import validate
 
 if TYPE_CHECKING:
     from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -47,56 +49,41 @@ class User(BaseModel):
     id: int
 
 
-@metrics.log_metrics(capture_cold_start_metric=True)
-@tracer.capture_lambda_handler
-@logger.inject_lambda_context(log_event=True)
-@event_source(data_class=APIGatewayProxyEvent)
-@handle_api_errors(logger)
-def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, Any]:
-    """APIGatewayからのリクエストを処理し、DBからユーザー情報を取得して返す.
+body_schema: dict = {
+    "type": "object",
+    "properties": {
+        "id": {"type": "integer"},
+    },
+    "required": ["id"],
+}
+
+
+@tracer.capture_method
+def fetch_db(user: User) -> tuple:
+    """DBからデータを取得する.
 
     Args:
-        event (APIGatewayProxyEvent): API Gatewayからのイベントデータ.
-        _ (LambdaContext): Lambda実行コンテキスト (未使用).
-
+        user (User): ユーザーモデル
     Returns:
-        dict[str, Any]: API Gatewayへのレスポンス.
+        tuple: ユーザー情報
     """
-    try:
-        body: dict[str, Any] = event.json_body
-        validate(
-            event=body,
-            schema={
-                "type": "object",
-                "properties": {
-                    "id": {"type": "integer"},
-                },
-                "required": ["id"],
-            },
-        )
-        user: User = parse(event=body, model=User)
-
-    except ValidationError as e:
-        raise BadRequestError from e
-
-    logger.append_keys(user_id=user.id)
-
     settings: dict = parameters.get_parameter(f"{SSM_PATH_PREFIX}settings", transform="json")
     db_settings: dict = settings["db"]
 
+    start_time: float = time.perf_counter()
     psycopg2_module = get_psycopg2()
     query: str = textwrap.dedent(
         """
-                SELECT
-                    user_id
-                    , email
-                    , username
-                    , display_name
-                FROM
-                    users
-                WHERE
-                    user_id = %s;
-            """,
+        SELECT
+            user_id
+            , email
+            , username
+            , display_name
+        FROM
+            users
+        WHERE
+            user_id = %s;
+        """,
     )
 
     with (
@@ -110,8 +97,41 @@ def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, A
         conn.cursor() as cursor,
     ):
         cursor.execute(query, (user.id,))
-        record = cursor.fetchone()
+        end_time: float = time.perf_counter()
+        metrics.add_metric(
+            name="DatabaseQueryLatency",
+            unit=MetricUnit.Milliseconds,
+            value=(end_time - start_time) * 1000,
+        )
+        return cursor.fetchone()
 
+
+@metrics.log_metrics(capture_cold_start_metric=True)
+@tracer.capture_lambda_handler
+@logger.inject_lambda_context(log_event=True)
+@event_source(data_class=APIGatewayProxyEvent)
+@error_handler(logger, metrics)
+@validate(body_schema=body_schema)
+def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, Any]:
+    """APIGatewayからのリクエストを処理し、DBからユーザー情報を取得して返す.
+
+    Args:
+        event (APIGatewayProxyEvent): API Gatewayからのイベントデータ.
+        _ (LambdaContext): Lambda実行コンテキスト (未使用).
+
+    Returns:
+        dict[str, Any]: API Gatewayへのレスポンス.
+    """
+    try:
+        body: dict[str, Any] = event.json_body
+        user: User = parse(event=body, model=User)
+
+    except ValidationError as e:
+        raise BadRequestError from e
+
+    logger.append_keys(user_id=user.id)
+
+    record: tuple | None = fetch_db(user)
     if record:
         response_body = {
             "user_id": record[0],
