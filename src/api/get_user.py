@@ -19,6 +19,7 @@ from api.middleware.validate import validate
 
 if TYPE_CHECKING:
     from aws_lambda_powertools.utilities.typing import LambdaContext
+    from psycopg2.extras import DictRow
 
 LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "INFO")
 SSM_PATH_PREFIX: str = os.environ.get("SSM_PATH_PREFIX", "/python-devcontainer/dev/")
@@ -39,6 +40,7 @@ def get_psycopg2() -> Any:  # noqa: ANN401
     """
     # NOTE: Lambdaのコールドスタート時間短縮のため、psycopg2を遅延インポート
     import psycopg2  # noqa: PLC0415
+    import psycopg2.extras  # noqa: PLC0415
 
     return psycopg2
 
@@ -58,20 +60,30 @@ body_schema: dict = {
 }
 
 
+class UserRecord(BaseModel):
+    """DBから取得したユーザーレコードのスキーマ."""
+
+    user_id: int
+    email: str
+    username: str | None
+    display_name: str | None
+
+
 @tracer.capture_method
-def fetch_db(user: User) -> tuple:
+def fetch_db(user: User) -> UserRecord | None:
     """DBからデータを取得する.
 
     Args:
         user (User): ユーザーモデル
     Returns:
-        tuple: ユーザー情報
+        UserRecord: ユーザー情報
     """
     settings: dict = parameters.get_parameter(f"{SSM_PATH_PREFIX}settings", transform="json")
     db_settings: dict = settings["db"]
 
     start_time: float = time.perf_counter()
-    psycopg2_module = get_psycopg2()
+    psycopg2 = get_psycopg2()
+
     query: str = textwrap.dedent(
         """
         SELECT
@@ -87,14 +99,14 @@ def fetch_db(user: User) -> tuple:
     )
 
     with (
-        psycopg2_module.connect(
+        psycopg2.connect(
             dbname=db_settings["database"],
             user=db_settings["user"],
             password=db_settings["password"],
             host=db_settings["host"],
             port=db_settings["port"],
         ) as conn,
-        conn.cursor() as cursor,
+        conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor,
     ):
         cursor.execute(query, (user.id,))
         end_time: float = time.perf_counter()
@@ -103,7 +115,8 @@ def fetch_db(user: User) -> tuple:
             unit=MetricUnit.Milliseconds,
             value=(end_time - start_time) * 1000,
         )
-        return cursor.fetchone()
+        record: DictRow = cursor.fetchone()
+        return UserRecord.model_validate(dict(record)) if record else None
 
 
 @metrics.log_metrics(capture_cold_start_metric=True)
@@ -131,13 +144,13 @@ def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, A
 
     logger.append_keys(user_id=user.id)
 
-    record: tuple | None = fetch_db(user)
+    record: UserRecord | None = fetch_db(user)
     if record:
         response_body = {
-            "user_id": record[0],
-            "email": record[1],
-            "username": record[2],
-            "display_name": record[3],
+            "user_id": record.user_id,
+            "email": record.email,
+            "username": record.username,
+            "display_name": record.display_name,
         }
     else:
         response_body = {}
