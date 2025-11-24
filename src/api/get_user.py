@@ -13,6 +13,8 @@ from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent, e
 from aws_lambda_powertools.utilities.parser import BaseModel, ValidationError, parse
 from aws_lambda_powertools.utilities.validation import validate
 
+from api.error_middleware import BadRequestError, handle_api_errors
+
 if TYPE_CHECKING:
     from aws_lambda_powertools.utilities.typing import LambdaContext
 
@@ -49,6 +51,7 @@ class User(BaseModel):
 @tracer.capture_lambda_handler
 @logger.inject_lambda_context(log_event=True)
 @event_source(data_class=APIGatewayProxyEvent)
+@handle_api_errors(logger)
 def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, Any]:
     """APIGatewayからのリクエストを処理し、DBからユーザー情報を取得して返す.
 
@@ -73,22 +76,17 @@ def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, A
         )
         user: User = parse(event=body, model=User)
 
-    except ValidationError:
-        logger.exception("Request body validation failed.")
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"message": "ValidationError"}),
-        }
+    except ValidationError as e:
+        raise BadRequestError from e
 
     logger.append_keys(user_id=user.id)
 
-    try:
-        settings: dict = parameters.get_parameter(f"{SSM_PATH_PREFIX}settings", transform="json")
-        db_settings: dict = settings["db"]
+    settings: dict = parameters.get_parameter(f"{SSM_PATH_PREFIX}settings", transform="json")
+    db_settings: dict = settings["db"]
 
-        psycopg2_module = get_psycopg2()
-        query: str = textwrap.dedent(
-            """
+    psycopg2_module = get_psycopg2()
+    query: str = textwrap.dedent(
+        """
                 SELECT
                     user_id
                     , email
@@ -99,43 +97,36 @@ def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, A
                 WHERE
                     user_id = %s;
             """,
-        )
+    )
 
-        with (
-            psycopg2_module.connect(
-                dbname=db_settings["database"],
-                user=db_settings["user"],
-                password=db_settings["password"],
-                host=db_settings["host"],
-                port=db_settings["port"],
-            ) as conn,
-            conn.cursor() as cursor,
-        ):
-            cursor.execute(query, (user.id,))
-            record = cursor.fetchone()
+    with (
+        psycopg2_module.connect(
+            dbname=db_settings["database"],
+            user=db_settings["user"],
+            password=db_settings["password"],
+            host=db_settings["host"],
+            port=db_settings["port"],
+        ) as conn,
+        conn.cursor() as cursor,
+    ):
+        cursor.execute(query, (user.id,))
+        record = cursor.fetchone()
 
-        if record:
-            response_body = {
-                "user_id": record[0],
-                "email": record[1],
-                "username": record[2],
-                "display_name": record[3],
-            }
-        else:
-            response_body = {}
-
-        response = {
-            "statusCode": 200,
-            "body": json.dumps(response_body),
-            "headers": {"Content-Type": "application/json"},
+    if record:
+        response_body = {
+            "user_id": record[0],
+            "email": record[1],
+            "username": record[2],
+            "display_name": record[3],
         }
+    else:
+        response_body = {}
 
-    except Exception:
-        logger.exception("An unexpected error occurred.")
-        response = {
-            "statusCode": 500,
-            "body": json.dumps({"message": "Internal Server Error"}),
-        }
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(response_body),
+        "headers": {"Content-Type": "application/json"},
+    }
 
     logger.info("Successfully processed request.")
     return response
