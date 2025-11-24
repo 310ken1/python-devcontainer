@@ -6,10 +6,15 @@ readme = "README.md"
 requires-python = "==3.13.*"
 
 dependencies = [
+    "aws-lambda-powertools[parser,tracer,validation]>=3.22.1",
+    "boto3>=1.40.74",
+    "psycopg2-binary>=2.9.11",
+    "pydantic>=2.12.4",
 ]
 
 [dependency-groups]
 dev = [
+    "moto>=5.1.16",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "pytest-mock>=3.14.1",
