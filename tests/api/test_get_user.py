@@ -8,6 +8,7 @@ from unittest import mock
 
 import boto3
 import pytest
+from aws_lambda_powertools.utilities import parameters
 from moto import mock_aws
 
 
@@ -42,21 +43,24 @@ expected_template: dict = {
     "response": {
         "statusCode": 200,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(
-            {
-                "user_id": 1,
-                "email": "user_a@example.com",
-                "username": "User A",
-                "display_name": "User A",
-            },
-        ),
+        "body": {
+            "user_id": 1,
+            "email": "user_a@example.com",
+            "username": "User A",
+            "display_name": "User A",
+        },
     },
 }
-
 excepted_400_template: dict = {
     "response": {
         "statusCode": 400,
-        "body": json.dumps({"error": "Bad Request"}),
+        "body": {"error": "Bad Request"},
+    },
+}
+excepted_500_template: dict = {
+    "response": {
+        "statusCode": 500,
+        "body": {"error": "Internal Server Error"},
     },
 }
 
@@ -76,6 +80,14 @@ test_cases: dict = {
         event_template | {"body": {"id": "invalid"}},
         # expected
         excepted_400_template,
+    ],
+    "異常 500": [
+        # mock
+        mock_template | {"ssm": {"db": None}},
+        # event
+        event_template,
+        # expected
+        excepted_500_template,
     ],
 }
 
@@ -99,7 +111,11 @@ def test_user(mock: dict, event: dict, expected: dict) -> None:
     lambda_event = event.copy()
     if isinstance(event["body"], dict):
         lambda_event["body"] = json.dumps(event["body"])
+    lambda_exception = expected.copy()
+    if isinstance(expected["response"]["body"], dict):
+        lambda_exception["response"]["body"] = json.dumps(expected["response"]["body"])
 
+    parameters.clear_caches()
     with mock_aws():
         ssm = boto3.client("ssm")
         ssm.put_parameter(
@@ -114,4 +130,4 @@ def test_user(mock: dict, event: dict, expected: dict) -> None:
         importlib.reload(api.get_user)
 
         response = api.get_user.lambda_handler(lambda_event, LambdaContext())
-        assert response == expected["response"]
+        assert response == lambda_exception["response"]
