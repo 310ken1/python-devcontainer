@@ -25,6 +25,10 @@
   "python.experiments.optInto": [
     "pythonTestAdapter"
   ],
+  "python.analysis.extraPaths": [
+    "./src",
+    "./tests"
+  ],
   "ruff.organizeImports": true,
   // yaml設定
   "[yaml]": {
@@ -48,5 +52,5 @@
   },
   // Markdown Preview Enhanced設定
   "markdown-preview-enhanced.plantumlJarPath": "/usr/local/bin/plantuml.jar",
-  "markdown-preview-enhanced.enableScriptExecution": true
+  "markdown-preview-enhanced.enableScriptExecution": true,
 }
