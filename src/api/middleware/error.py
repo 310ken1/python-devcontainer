@@ -18,60 +18,95 @@ if TYPE_CHECKING:
 class APIError(Exception):
     """APIエラーの基底クラス."""
 
-    level: str = "exception"
+
+class APIFatalError(APIError):
+    """復旧不可能なAPIエラー."""
+
+
+class UnhandledError(APIError):
+    """予期しない例外."""
+
     status_code: int = HTTPStatus.INTERNAL_SERVER_ERROR
     message: str = "Internal Server Error"
-    log_message: str = "UnhandledException"
-    metric_name: str = "UnhandledException"
+    id: str = "UnhandledException"
 
 
-class BadRequestError(APIError):
-    """400 エラー例外."""
+class InternalServerError(APIFatalError):
+    """500 Internal Server Error (サーバー内部エラー)."""
 
-    level: str = "warning"
+    status_code: int = HTTPStatus.INTERNAL_SERVER_ERROR
+    message: str = "Internal Server Error"
+    id: str = "InternalServerError"
+
+
+class APITransientError(APIError):
+    """一時的な(復旧可能な)APIエラー."""
+
+
+class ServiceUnavailableError(APITransientError):
+    """503 Service Unavailable (サービス利用不可)."""
+
+    status_code: int = HTTPStatus.SERVICE_UNAVAILABLE
+    message: str = "Service Unavailable"
+    id: str = "ServiceUnavailableError"
+
+
+class ClientError(APIError):
+    """クライアント要因の警告."""
+
+
+class BadRequestError(ClientError):
+    """400 Bad Request (不正なリクエスト構文)."""
+
     status_code: int = HTTPStatus.BAD_REQUEST
     message: str = "Bad Request"
-    log_message: str = "BadRequestError"
-    metric_name: str = "BadRequestError"
+    id: str = "BadRequestError"
 
 
-class UnauthorizedError(APIError):
-    """401 エラー例外."""
+class UnauthorizedError(ClientError):
+    """401 Unauthorized (認証エラー)."""
 
-    level: str = "warning"
     status_code: int = HTTPStatus.UNAUTHORIZED
     message: str = "Unauthorized"
-    log_message: str = "UnauthorizedError"
-    metric_name: str = "UnauthorizedError"
+    id: str = "UnauthorizedError"
 
 
-class InternalServerError(APIError):
-    """500 エラー例外."""
+class ForbiddenError(ClientError):
+    """403 Forbidden (認可エラー)."""
 
-    level: str = "exception"
-    status_code: int = HTTPStatus.INTERNAL_SERVER_ERROR
-    message: str = "Internal Server Error"
-    log_message: str = "InternalServerError"
-    metric_name: str = "InternalServerError"
+    status_code: int = HTTPStatus.FORBIDDEN
+    message: str = "Forbidden"
+    id: str = "ForbiddenError"
+
+
+class NotFoundError(ClientError):
+    """404 Not Found (リソース未発見)."""
+
+    status_code: int = HTTPStatus.NOT_FOUND
+    message: str = "Not Found"
+    id: str = "NotFoundError"
 
 
 def _error_helper(error: Exception, logger: Logger, metrics: Metrics = None) -> dict[str, Any]:
     """APIErrorをHTTPレスポンスに変換するヘルパー関数."""
-    e: APIError = error if isinstance(error, APIError) else InternalServerError()
-
-    if e.level == "warning":
-        logger.warning(e.log_message)
-    elif e.level == "error":
-        logger.error(e.log_message)
-    elif e.level == "exception":
-        logger.exception(e.log_message)
+    if isinstance(error, APIFatalError):
+        logger.exception(error.id)
+    elif isinstance(error, APITransientError):
+        logger.error(error.id)
+    elif isinstance(error, ClientError):
+        logger.warning(error.id)
     else:
-        logger.info(e.log_message)
+        error = UnhandledError()
+        logger.exception(error.id)
+
     if metrics:
-        metrics.add_metric(name=e.metric_name, unit="Count", value=1)
+        metrics.add_metric(name=error.id, unit="Count", value=1)
+
     return {
-        "statusCode": e.status_code,
-        "body": json.dumps({"error": e.message}),
+        "statusCode": error.status_code,
+        "body": json.dumps({"message": error.message}),
+        "headers": {"Content-Type": "application/json"},
+        "isBase64Encoded": False,
     }
 
 

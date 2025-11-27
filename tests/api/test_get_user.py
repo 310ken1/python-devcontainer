@@ -54,13 +54,17 @@ expected_template: dict = {
 excepted_400_template: dict = {
     "response": {
         "statusCode": 400,
-        "body": {"error": "Bad Request"},
+        "body": {"message": "Bad Request"},
+        "headers": {"Content-Type": "application/json"},
+        "isBase64Encoded": False,
     },
 }
 excepted_500_template: dict = {
     "response": {
         "statusCode": 500,
-        "body": {"error": "Internal Server Error"},
+        "body": {"message": "Internal Server Error"},
+        "headers": {"Content-Type": "application/json"},
+        "isBase64Encoded": False,
     },
 }
 

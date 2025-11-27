@@ -10,7 +10,7 @@ from aws_lambda_powertools import Logger, Metrics, Tracer
 from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent, event_source
 from aws_lambda_powertools.utilities.parser import BaseModel, ValidationError, parse
 
-from api.middleware.error import BadRequestError, error_handler
+from api.middleware.error import BadRequestError, NotFoundError, error_handler
 from api.middleware.validate import validate
 from api.repository.db_connector import DBConnector
 from api.repository.user_repository import UserRecord, UserRepository
@@ -18,11 +18,15 @@ from api.repository.user_repository import UserRecord, UserRepository
 if TYPE_CHECKING:
     from aws_lambda_powertools.utilities.typing import LambdaContext
 
+# 環境変数設定
 LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "INFO")
 SSM_PATH: str = os.environ.get("SSM_PATH", "/python-devcontainer/dev/settings")
 
-SERVICE_NAME: str = "python-devcontainer"
-NAMESPACE_NAME: str = "lambda_handler"
+# Lambda Powertools 設定
+# ネームスペース(会社・組織名、またはトップレベルのアプリケーション名)
+NAMESPACE_NAME: str = "python-devcontainer"
+# サービス名(アプリケーション、またはビジネス機能の論理的なグループ)
+SERVICE_NAME: str = "user-service"
 
 logger: Logger = Logger(service=SERVICE_NAME, level=LOG_LEVEL)
 tracer: Tracer = Tracer(service=SERVICE_NAME)
@@ -79,13 +83,10 @@ def lambda_handler(event: APIGatewayProxyEvent, _: LambdaContext) -> dict[str, A
             "display_name": record.display_name,
         }
     else:
-        response_body = {}
+        raise NotFoundError
 
-    response = {
+    return {
         "statusCode": 200,
         "body": json.dumps(response_body),
         "headers": {"Content-Type": "application/json"},
     }
-
-    logger.info("Successfully processed request.")
-    return response
