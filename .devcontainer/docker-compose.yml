@@ -4,6 +4,9 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+      args:
+        PYTHON_VERSION: ${COMPOSE_ENV_PYTHON_VERSION}
+        NODE_VERSION: ${COMPOSE_ENV_NODE_VERSION}
     image: ${COMPOSE_ENV_CONTAINER_NAME}-image
     command: [ "sleep", "infinity" ]
 

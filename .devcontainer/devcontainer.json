@@ -4,6 +4,10 @@
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "VIRTUAL_ENV": "/workspace/.venv",
+    "UV_VENV_CLEAR": "1"
+  },
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=cached",
     "source=${USERPROFILE}/.aws,target=/root/.aws,type=ro",
@@ -52,10 +56,5 @@
       }
     }
   },
-  "remoteEnv": {
-    "PYTHON_VERSION": "3.13",
-    "VIRTUAL_ENV": "/workspace/.venv",
-    "UV_VENV_CLEAR": "1"
-  },
-  "postCreateCommand": "sh .devcontainer/postCreateCommand.sh"
+  "postAttachCommand": "sh .devcontainer/postAttachCommand.sh"
 }

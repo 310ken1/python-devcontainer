@@ -9,16 +9,22 @@ ARG GID=1001
 ARG HOME=/home/${USER}
 # PlantUML
 ARG PLANTUML_VERSION=1.2025.10
+# Python
+ARG PYTHON_VERSION=lts
+# Node.js
+ARG NODE_VERSION=lts
 
 # 環境変数
-ENV LANG=ja_JP.UTF-8
-ENV LC_ALL=ja_JP.UTF-8
+ENV LANG=ja_JP.UTF-8 \
+    LC_ALL=ja_JP.UTF-8 \
+    PYTHON_VERSION=${PYTHON_VERSION}
 
 # パッケージインストール
 RUN --mount=type=cache,target=/var/cache/dnf \
     dnf update -y && dnf install -y \
     shadow-utils \
     sudo \
+    procps-ng \
     tar \
     unzip \
     git \
@@ -53,7 +59,16 @@ ENV PATH="/workspace/scripts/:$PATH"
 USER ${USER}
 WORKDIR ${HOME}
 
-# プロジェクトマネージャ(uv)のインストール
+# Pythonプロジェクトマネージャ(uv)のインストール
 # https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
-ENV PATH="${HOME}/.local/bin/:$PATH"
+ENV PATH="${HOME}/.local/bin/:${PATH}"
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Nodeバージョン管理ツール(nvs)のインストール
+# https://github.com/jasongin/nvs
+ENV NVS_HOME="${HOME}/.nvs" \
+    PATH="${HOME}/.nvs:${PATH}"
+RUN git clone https://github.com/jasongin/nvs "${NVS_HOME}"
+RUN bash -c "\
+    source ${NVS_HOME}/nvs.sh && nvs add ${NODE_VERSION} && nvs link ${NODE_VERSION}"
+RUN echo '[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh" && nvs use' >> "${HOME}/.bashrc"
