@@ -68,7 +68,11 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 # https://github.com/jasongin/nvs
 ENV NVS_HOME="${HOME}/.nvs" \
     PATH="${HOME}/.nvs:${PATH}"
-RUN git clone https://github.com/jasongin/nvs "${NVS_HOME}"
-RUN bash -c "\
-    source ${NVS_HOME}/nvs.sh && nvs add ${NODE_VERSION} && nvs link ${NODE_VERSION}"
-RUN echo '[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh" && nvs use' >> "${HOME}/.bashrc"
+RUN git clone https://github.com/jasongin/nvs "${NVS_HOME}" && \
+    bash -c "\
+    source ${NVS_HOME}/nvs.sh && \
+    nvs add ${NODE_VERSION} && \
+    nvs link ${NODE_VERSION} && \
+    nvs use ${NODE_VERSION} && \
+    npm install -g aws-cdk" && \
+    echo '[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh" && nvs use' >> "${HOME}/.bashrc"
