@@ -14,6 +14,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "aws-cdk-lib>=2.230.0",
+    "constructs>=10.4.3",
     "moto>=5.1.16",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
