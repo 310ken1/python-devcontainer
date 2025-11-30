@@ -49,8 +49,8 @@ RUN groupadd -g ${GID} ${USER} && \
     useradd -m -u ${UID} -g ${GID} -s /bin/bash ${USER} && \
     echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER} && \
     chmod 0440 /etc/sudoers.d/${USER} && \
-    mkdir -p ${HOME} && \
-    chown ${UID}:${GID} ${HOME}
+    mkdir -p ${HOME}/.cache && \
+    chown -R ${UID}:${GID} ${HOME}
 
 # プロジェクト設定
 RUN mkdir -p /workspace && chown -R ${UID}:${GID} /workspace
@@ -76,3 +76,4 @@ RUN git clone https://github.com/jasongin/nvs "${NVS_HOME}" && \
     nvs use ${NODE_VERSION} && \
     npm install -g aws-cdk" && \
     echo '[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh" && nvs use' >> "${HOME}/.bashrc"
+

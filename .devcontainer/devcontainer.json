@@ -10,7 +10,7 @@
   },
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=cached",
-    "source=${USERPROFILE}/.aws,target=/root/.aws,type=ro",
+    "source=${USERPROFILE}/.aws,target=/home/vscode/.aws,type=ro",
     "source=venv,target=/workspace/.venv,type=volume",
     "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
   ],
