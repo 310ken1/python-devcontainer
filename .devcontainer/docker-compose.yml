@@ -5,4 +5,15 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     image: ${COMPOSE_ENV_CONTAINER_NAME}-image
+    volumes:
+      - ..:/workspace:cached
+      - ${USERPROFILE}/.aws:/home/vscode/.aws
+      - venv:/workspace/.venv
+      - uv-cache:/home/vscode/.cache/uv
+    working_dir: /workspace
+    tty: true
     command: [ "sleep", "infinity" ] # コンテナを起動したままにする
+
+volumes:
+  venv:
+  uv-cache:

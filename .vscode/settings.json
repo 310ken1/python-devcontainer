@@ -14,6 +14,7 @@
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
+  "python.languageServer": "None",
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
   "python.testing.unittestEnabled": false,
@@ -26,6 +27,20 @@
     "pythonTestAdapter"
   ],
   "ruff.organizeImports": true,
+  // TypeScript設定
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+  },
+  // JavaScript設定
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+  },
   // yaml設定
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml",
