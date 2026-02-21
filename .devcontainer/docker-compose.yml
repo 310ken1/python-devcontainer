@@ -4,11 +4,14 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-      args:
-        PYTHON_VERSION: ${COMPOSE_ENV_PYTHON_VERSION}
-        NODE_VERSION: ${COMPOSE_ENV_NODE_VERSION}
     image: ${COMPOSE_ENV_CONTAINER_NAME}-image
-    command: [ "sleep", "infinity" ]
+    volumes:
+      - ..:/workspace:cached
+      - ${USERPROFILE}/.aws:/home/vscode/.aws
+      - venv:/workspace/.venv
+    working_dir: /workspace
+    tty: true
+    command: [ "sleep", "infinity" ] # コンテナを起動したままにする
 
   postgres:
     container_name: postgres16
@@ -24,4 +27,7 @@ services:
       - ./pgdata:/var/lib/postgresql/data
 
 volumes:
+  venv:
   pgdate:
+
+

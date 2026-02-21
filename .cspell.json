@@ -1,21 +1,23 @@
 {
   "version": "0.2",
   "words": [
-    "graphviz",
-    "ipafont",
-    "tmp_path",
-    "tmp_path_factory",
-    "capsys",
+    "cache",
     "capfd",
-    "capsysbinary",
     "capfdbinary",
     "caplog",
+    "capsys",
+    "capsysbinary",
+    "graphviz",
+    "ipafont",
     "monkeypatch",
-    "request",
+    "pytest",
     "pytestconfig",
-    "cache",
     "recwarn",
-    "testdir"
+    "request",
+    "testdir",
+    "tmp_path",
+    "tmp_path_factory",
+    "venv"
   ],
   "ignorePaths": [
     ".cspell.json",

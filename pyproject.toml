@@ -3,37 +3,31 @@ name = "Python-DevContainer"
 version = "0.1.0"
 description = "DevContainer を利用した Python 用の開発環境"
 readme = "README.md"
-requires-python = "==3.13.*"
-
 dependencies = [
-    "aws-lambda-powertools[parser,tracer,validation]>=3.23.0",
-    "boto3>=1.40.74",
-    "psycopg2-binary>=2.9.11",
-    "pydantic>=2.12.4",
+  "aws-lambda-powertools[parser,tracer,validation]>=3.23.0",
+  "boto3>=1.40.74",
+  "psycopg2-binary>=2.9.11",
+  "pydantic>=2.12.4",
 ]
 
 [dependency-groups]
 dev = [
-    "aws-cdk-lib>=2.230.0",
-    "constructs>=10.4.3",
-    "moto>=5.1.16",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.1.1",
-    "pytest-mock>=3.14.1",
-    "sphinx>=8.2.3",
-    "sphinx-intl>=2.3.2",
+  "aws-cdk-lib>=2.230.0",
+  "constructs>=10.4.3",
+  "moto>=5.1.16",
+  "pytest>=8.3.5",
+  "pytest-cov>=6.1.1",
+  "pytest-mock>=3.14.1",
 ]
 
 [tool.ruff]
 line-length = 120
 fix = true
 exclude = [
-    ".venv",
-    "__pycache__",
-    "migrations",
+  ".venv",
+  "__pycache__",
+  "migrations",
 ]
-select = ["E", "F", "B", "S", "D", "PLR"]
-ignore = []
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -41,28 +35,30 @@ docstring-code-format = true
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "INP001",  # __init__.pyがない
-    "EXE002",  # シバンがない
+  "INP001",  # __init__.pyがない
+  "EXE002",  # シバンがない
 ]
-unfixable = [
-    
-]
+unfixable = []
 logger-objects = ["src.library.logger.LOGGER"]
 
 [tool.ruff.lint.pylint]
 max-args = 6
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
-  "S101",     # assert を許可
-  "D",        # docstring 不要
+  "S101",  # assert を許可
+  "D",  # docstring 不要
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["src",]
-testpaths = ["tests",]
+pythonpath = [
+  "src",
+]
+testpaths = [
+  "tests",
+]
 addopts = "-v"
 disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true

@@ -1,0 +1,14 @@
+[tools]
+aws = { version = "latest", symlink_bins = "true" }
+aws-sam = { version = "latest", symlink_bins = "true" }
+java = "latest"
+node = "latest"
+python = "latest"
+uv = "latest"
+
+[env]
+VIRTUAL_ENV = "/workspace/.venv"
+UV_VENV_CLEAR = "1"
+
+[tasks.test]
+run = "pytest -v --cov=src --cov-report=html tests"

@@ -9,27 +9,22 @@ ARG GID=1001
 ARG HOME=/home/${USER}
 # PlantUML
 ARG PLANTUML_VERSION=1.2025.10
-# Python
-ARG PYTHON_VERSION=lts
-# Node.js
-ARG NODE_VERSION=lts
 
 # 環境変数
 ENV LANG=ja_JP.UTF-8 \
-    LC_ALL=ja_JP.UTF-8 \
-    PYTHON_VERSION=${PYTHON_VERSION}
+    LC_ALL=ja_JP.UTF-8
 
 # パッケージインストール
 RUN --mount=type=cache,target=/var/cache/dnf \
     dnf update -y && dnf install -y \
     shadow-utils \
+    libatomic \
     sudo \
     procps-ng \
     tar \
     unzip \
     git \
     findutils \
-    java-21-amazon-corretto-headless \
     graphviz \
     glibc-langpack-ja \
     ipa-gothic-fonts && \
@@ -37,12 +32,6 @@ RUN --mount=type=cache,target=/var/cache/dnf \
 
 # PlantUMLインストール
 RUN curl -LsSf "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar" -o /usr/local/bin/plantuml.jar
-
-# AWS CLI v2 のインストール
-# https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip" && \
-    unzip /tmp/awscliv2.zip -d /tmp && /tmp/aws/install && \
-    rm -rf /tmp/aws /tmp/awscliv2.zip
 
 # ユーザ設定
 RUN groupadd -g ${GID} ${USER} && \
@@ -58,22 +47,3 @@ ENV PATH="/workspace/scripts/:$PATH"
 
 USER ${USER}
 WORKDIR ${HOME}
-
-# Pythonプロジェクトマネージャ(uv)のインストール
-# https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
-ENV PATH="${HOME}/.local/bin/:${PATH}"
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Nodeバージョン管理ツール(nvs)のインストール
-# https://github.com/jasongin/nvs
-ENV NVS_HOME="${HOME}/.nvs" \
-    PATH="${HOME}/.nvs:${PATH}"
-RUN git clone https://github.com/jasongin/nvs "${NVS_HOME}" && \
-    bash -c "\
-    source ${NVS_HOME}/nvs.sh && \
-    nvs add ${NODE_VERSION} && \
-    nvs link ${NODE_VERSION} && \
-    nvs use ${NODE_VERSION} && \
-    npm install -g aws-cdk" && \
-    echo '[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh" && nvs use' >> "${HOME}/.bashrc"
-

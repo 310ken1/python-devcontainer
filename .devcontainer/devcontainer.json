@@ -4,32 +4,25 @@
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
   "remoteUser": "vscode",
-  "remoteEnv": {
-    "VIRTUAL_ENV": "/workspace/.venv",
-    "UV_VENV_CLEAR": "1"
-  },
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=cached",
-    "source=${USERPROFILE}/.aws,target=/home/vscode/.aws,type=ro",
-    "source=venv,target=/workspace/.venv,type=volume",
-    "source=uv-cache,target=/home/vscode/.cache/uv,type=volume"
-  ],
   "customizations": {
     "vscode": {
       "extensions": [
         // Python
         "ms-python.python",
-        "ms-python.vscode-pylance",
         "ms-python.debugpy",
+        "astral-sh.ty",
         "charliermarsh.ruff",
         "njpwerner.autodocstring",
         "esbenp.prettier-vscode",
+        // typescript
+        "oxc.oxc-vscode",
         // 開発支援ツール
         "streetsidesoftware.code-spell-checker",
+        "redhat.vscode-yaml",
+        "tombi-toml.tombi",
         "uctakeoff.vscode-counter",
-        "alefragnani.Bookmarks",
         "usernamehw.errorlens",
-        "PKief.material-icon-theme",
+        "hverlin.mise-vscode",
         // AWS
         "amazonwebservices.aws-toolkit-vscode",
         // Markdown
@@ -45,6 +38,7 @@
         // ドキュメント
         "hediet.vscode-drawio",
         "42Crunch.vscode-openapi",
+        "asyncapi.asyncapi-preview",
         // テスト
         "humao.rest-client",
         // Visual Studio Code
@@ -56,5 +50,5 @@
       }
     }
   },
-  "postAttachCommand": "sh .devcontainer/postAttachCommand.sh"
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh"
 }
