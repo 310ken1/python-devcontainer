@@ -23,7 +23,6 @@ RUN --mount=type=cache,target=/var/cache/dnf \
     unzip \
     git \
     findutils \
-    java \
     graphviz \
     glibc-langpack-ja \
     ipa-gothic-fonts && \

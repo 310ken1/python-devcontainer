@@ -19,8 +19,10 @@
         // 開発支援ツール
         "streetsidesoftware.code-spell-checker",
         "redhat.vscode-yaml",
+        "tombi-toml.tombi",
         "uctakeoff.vscode-counter",
         "usernamehw.errorlens",
+        "hverlin.mise-vscode",
         // AWS
         "amazonwebservices.aws-toolkit-vscode",
         // Markdown
@@ -45,10 +47,6 @@
         "openapi.defaultPreviewRenderer": "redoc"
       }
     }
-  },
-  "remoteEnv": {
-    "VIRTUAL_ENV": "/workspace/.venv",
-    "UV_VENV_CLEAR": "1"
   },
   "postCreateCommand": "bash .devcontainer/postCreateCommand.sh"
 }
