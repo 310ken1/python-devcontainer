@@ -249,10 +249,3 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,visualstudiocode,git,python
-
-# customize
-# sphinx
-docs/sphinx/_build
-docs/sphinx/locale
-docs/sphinx/*.rst
-!docs/sphinx/index.rst
