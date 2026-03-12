@@ -26,6 +26,12 @@ services:
       - ./pginit:/docker-entrypoint-initdb.d
       - ./pgdata:/var/lib/postgresql/data
 
+  plantuml-server:
+    container_name: plantuml-server
+    image: plantuml/plantuml-server:jetty
+    ports:
+      - "8080:8080"
+
 volumes:
   venv:
   pgdate:

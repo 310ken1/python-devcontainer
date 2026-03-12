@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "asyncapi.asyncapi-preview",
+    "hediet.vscode-drawio",
+    "usernamehw.errorlens",
+    "ms-vscode-remote.remote-containers",
+    "ms-ceintl.vscode-language-pack-ja"
+  ]
+}

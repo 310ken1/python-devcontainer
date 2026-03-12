@@ -8,7 +8,7 @@ ARG UID=1001
 ARG GID=1001
 ARG HOME=/home/${USER}
 # PlantUML
-ARG PLANTUML_VERSION=1.2025.10
+# ARG PLANTUML_VERSION=1.2025.10
 
 # 環境変数
 ENV LANG=ja_JP.UTF-8 \
@@ -31,7 +31,7 @@ RUN --mount=type=cache,target=/var/cache/dnf \
     dnf clean all
 
 # PlantUMLインストール
-RUN curl -LsSf "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar" -o /usr/local/bin/plantuml.jar
+# RUN curl -LsSf "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar" -o /usr/local/bin/plantuml.jar
 
 # ユーザ設定
 RUN groupadd -g ${GID} ${USER} && \
