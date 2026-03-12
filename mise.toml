@@ -1,7 +1,6 @@
 [tools]
 aws = { version = "latest", symlink_bins = "true" }
 aws-sam = { version = "latest", symlink_bins = "true" }
-java = "latest"
 node = "latest"
 python = "latest"
 uv = "latest"

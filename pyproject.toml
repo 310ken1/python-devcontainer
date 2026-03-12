@@ -1,5 +1,5 @@
 [project]
-name = "Python-DevContainer"
+name = "devconpy"
 version = "0.1.0"
 description = "DevContainer を利用した Python 用の開発環境"
 readme = "README.md"
@@ -19,6 +19,9 @@ dev = [
   "pytest-cov>=6.1.1",
   "pytest-mock>=3.14.1",
 ]
+
+[tool.uv]
+package = true
 
 [tool.ruff]
 line-length = 120
