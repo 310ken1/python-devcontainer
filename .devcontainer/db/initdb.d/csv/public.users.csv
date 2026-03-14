@@ -1,0 +1,4 @@
+﻿"user_id","email","username","display_name","is_active","created_at","updated_at"
+1,"user_a@example.com","User A","User A",True,2025/11/16 22:38:36.634,2025/11/16 22:38:36.634
+2,"user_b@example.com","User B","User B",True,2025/11/16 22:39:06.037,2025/11/16 22:39:06.037
+3,"user_c@example.com","User C","User C",True,2025/11/16 22:39:33.293,2025/11/16 22:39:33.293

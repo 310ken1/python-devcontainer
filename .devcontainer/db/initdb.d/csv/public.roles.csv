@@ -1,0 +1,4 @@
+﻿"role_id","name","description","created_at"
+1,"admin","Administrator権限",2025/11/16 22:42:08.744
+2,"manager","管理者権限",2025/11/16 22:42:29.518
+3,"user","利用者権限",2025/11/16 22:42:39.724

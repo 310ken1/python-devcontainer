@@ -23,8 +23,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./pginit:/docker-entrypoint-initdb.d
-      - ./pgdata:/var/lib/postgresql/data
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/data:/var/lib/postgresql/data
 
   plantuml-server:
     container_name: plantuml-server
@@ -34,6 +34,5 @@ services:
 
 volumes:
   venv:
-  pgdate:
 
 

@@ -1,0 +1,5 @@
+﻿"permission_id","name","description"
+1,"create_user","ユーザ作成権限"
+2,"read_user","ユーザ参照権限"
+3,"change_user_role","ユーザロール変更権限"
+4,"create_role","ロール作成権限"
