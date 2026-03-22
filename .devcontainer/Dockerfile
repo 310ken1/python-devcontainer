@@ -22,10 +22,12 @@ RUN --mount=type=cache,target=/var/cache/dnf \
     sudo \
     procps-ng \
     tar \
+    tree \
     unzip \
     git \
     findutils \
     graphviz \
+    docker \
     glibc-langpack-ja \
     ipa-gothic-fonts && \
     dnf clean all
