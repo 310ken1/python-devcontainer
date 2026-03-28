@@ -2,6 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,visualstudiocode,git,python,node,sam
 
 ### customize ###
+# dotenv environment variable files
+.env.generated
 # CDK
 cdk.out
 
