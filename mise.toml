@@ -10,4 +10,14 @@ VIRTUAL_ENV = "/workspace/.venv"
 UV_VENV_CLEAR = "1"
 
 [tasks.test]
+description = "テスト実行（カバレッジ出力あり）"
 run = "pytest -v --cov=src --cov-report=html tests"
+
+[tasks.mock]
+description = "APIモック実行"
+run = """
+cd api-mock
+sam build
+sam local start-api
+"""
+interactive = true

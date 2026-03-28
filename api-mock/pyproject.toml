@@ -1,0 +1,39 @@
+[project]
+name = "api-mock"
+version = "1.0.0"
+
+[tool.ruff]
+line-length = 120
+fix = true
+exclude = [
+  ".venv",
+  "__pycache__",
+  "migrations",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "INP001",  # __init__.pyがない
+  "EXE002",  # シバンがない
+]
+unfixable = []
+logger-objects = ["src.library.logger.LOGGER"]
+
+[tool.ruff.lint.pylint]
+max-args = 6
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+  "S101",  # assert を許可
+  "D",  # docstring 不要
+]
+
+[tool.uv]
+package = true
