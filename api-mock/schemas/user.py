@@ -2,19 +2,19 @@
 
 from pydantic import BaseModel
 
-from schemas.annotated import UserEmail, UserGender, UserId, UserName
+from schemas.field import EmailField, GenderField, UserIdField, UserNameField
 
 
 class User(BaseModel):
     """ユーザ情報."""
 
-    id: UserId
-    name: UserName
-    email: UserEmail
-    gender: UserGender | None = None
+    id: UserIdField
+    name: UserNameField
+    email: EmailField
+    gender: GenderField
 
 
 class UserQuery(BaseModel):
     """ユーザ問い合わせ情報."""
 
-    id: UserId
+    id: UserIdField

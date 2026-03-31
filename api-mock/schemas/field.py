@@ -1,4 +1,4 @@
-"""型定義."""
+"""フィールド定義."""
 
 from enum import Enum
 from typing import Annotated
@@ -9,12 +9,12 @@ from pydantic import EmailStr, Field
 class Gender(str, Enum):
     """性別."""
 
-    male = "男性"
-    female = "女性"
-    unknown = "その他"
+    male = "male"
+    female = "female"
+    unknown = "unknown"
 
 
-UserId = Annotated[
+UserIdField = Annotated[
     int,
     Field(
         description="ユーザID",
@@ -23,7 +23,8 @@ UserId = Annotated[
         le=9999,
     ),
 ]
-UserName = Annotated[
+
+UserNameField = Annotated[
     str,
     Field(
         description="氏名",
@@ -33,7 +34,7 @@ UserName = Annotated[
     ),
 ]
 
-UserEmail = Annotated[
+EmailField = Annotated[
     EmailStr,
     Field(
         description="メールアドレス",
@@ -43,10 +44,11 @@ UserEmail = Annotated[
     ),
 ]
 
-UserGender = Annotated[
-    Gender,
+GenderField = Annotated[
+    Gender | None,
     Field(
-        description="性別",
-        examples=["男性"],
+        default=None,
+        description="性別(male=男性, female=女性, unknown=その他)",
+        examples=["male"],
     ),
 ]

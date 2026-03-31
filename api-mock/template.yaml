@@ -17,8 +17,13 @@ Resources:
       Handler: app.lambda_handler
       CodeUri: .
       Events:
-        HelloPath:
+        Path:
           Type: Api
           Properties:
             Path: /{proxy+}
             Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

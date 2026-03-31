@@ -13,7 +13,7 @@ app.enable_swagger(
     title="APIモック",
     description="開発用APIモック",
     version="1.0.0",
-    servers=[Server(url="http://127.0.0.1:3000/", description="Local")],
+    servers=[Server(url="http://127.0.0.1:3000/", description="APIモック")],
 )
 app.include_router(users_router)
 app.include_router(rapidoc_router)

@@ -1,5 +1,8 @@
 """エラースキーマ定義."""
 
+from aws_lambda_powertools.event_handler.openapi.types import (
+    OpenAPIResponse,
+)
 from pydantic import BaseModel
 
 
@@ -16,7 +19,7 @@ class ErrorResponse(BaseModel):
     error: ApiError
 
 
-UnauthorizedResponse = {
+UnauthorizedResponse: OpenAPIResponse = {
     "description": "認証エラー",
     "content": {
         "application/json": {
@@ -35,7 +38,7 @@ UnauthorizedResponse = {
     },
 }
 
-InternalServerErrorResponse = {
+InternalServerErrorResponse: OpenAPIResponse = {
     "description": "内部サーバエラー",
     "content": {
         "application/json": {
