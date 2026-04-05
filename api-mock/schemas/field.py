@@ -1,4 +1,4 @@
-"""フィールド定義."""
+"""型定義."""
 
 from enum import Enum
 from typing import Annotated
@@ -47,7 +47,6 @@ EmailField = Annotated[
 GenderField = Annotated[
     Gender | None,
     Field(
-        default=None,
         description="性別(male=男性, female=女性, unknown=その他)",
         examples=["male"],
     ),

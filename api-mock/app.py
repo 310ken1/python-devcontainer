@@ -4,8 +4,8 @@ from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 from aws_lambda_powertools.event_handler.openapi.models import Server
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from routers.rapidoc import router as rapidoc_router
-from routers.users import router as users_router
+from routers.rapidoc_router import router as rapidoc_router
+from routers.users_router import router as users_router
 
 app = APIGatewayRestResolver()
 app.enable_swagger(
@@ -17,6 +17,14 @@ app.enable_swagger(
 )
 app.include_router(users_router)
 app.include_router(rapidoc_router)
+
+
+@app.exception_handler(Exception)
+def handle_exception(error: Exception) -> dict:
+    """例外ハンドラ."""
+    return {
+        "error": str(error),
+    }
 
 
 def lambda_handler(event: dict, context: LambdaContext) -> dict:
