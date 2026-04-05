@@ -8,6 +8,8 @@ uv = "latest"
 [env]
 VIRTUAL_ENV = "/workspace/.venv"
 UV_VENV_CLEAR = "1"
+SAM_CLI_CONTAINER_CONNECTION_TIMEOUT = 60
+SAM_CLI_TELEMETRY = 0
 
 [tasks.test]
 description = "テスト実行（カバレッジ出力あり）"
@@ -18,6 +20,6 @@ description = "APIモック実行"
 run = """
 cd api-mock
 sam build
-sam local start-api
+sam local start-api --debug
 """
 interactive = true

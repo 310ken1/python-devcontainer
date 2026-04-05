@@ -7,9 +7,6 @@ services:
     image: ${COMPOSE_ENV_CONTAINER_NAME}-image
     env_file:
       - .env.generated
-    environment:
-      SAM_CLI_CONTAINER_CONNECTION_TIMEOUT: 30
-      SAM_CLI_TELEMETRY: 0
     volumes:
       - ..:/workspace:cached
       - ${USERPROFILE}/.aws:/home/vscode/.aws
